@@ -429,12 +429,18 @@ where
 
 #[cfg(feature = "openapi-spec")]
 impl App<AppEntry, Body> {
-    pub fn openapi_spec(mut self) -> openapi::v3_0::Spec {
+    pub fn openapi_spec<S>(mut self, title: S, version: S) -> openapi::v3_0::Spec
+    where
+        S: Into<String>,
+    {
         use crate::config::AppService;
         use actix_http::Response;
         use actix_service::service_fn;
 
         let mut spec = openapi::v3_0::Spec::default();
+        spec.openapi = "3.0.1".to_string();
+        spec.info.title = title.into();
+        spec.info.version = version.into();
 
         let app_config = AppConfig::new(self.config);
         let data = Rc::new(self.data);

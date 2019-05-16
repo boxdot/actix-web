@@ -318,7 +318,8 @@ fn main() -> std::io::Result<()> {
         #[cfg(feature = "openapi-spec")]
         {
             let app = app_factory(String::new());
-            let spec: openapi::v3_0::Spec = app.openapi_spec();
+            let spec: openapi::v3_0::Spec =
+                app.openapi_spec("Extended Petstore API v1", "1.0.0");
             serde_json::to_string_pretty(&spec)?
         }
         #[cfg(not(feature = "openapi-spec"))]
