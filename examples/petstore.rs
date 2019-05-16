@@ -258,7 +258,7 @@ fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_server=info,actix_web=debug");
     env_logger::init();
 
-    let app_factory = || {
+    let app_factory = |openapi_spec: String| {
         App::new()
             .service(
                 web::resource("/pet")
@@ -308,7 +308,26 @@ fn main() -> std::io::Result<()> {
                     .route(web::put().to(update_user))
                     .route(web::delete().to(delete_user)),
             )
+            .service(
+                web::resource("/openapi")
+                    .route(web::get().to(move || openapi_spec.clone())),
+            )
     };
 
-    HttpServer::new(app_factory).bind("127.0.0.1:8080")?.run()
+    let openapi_spec = {
+        #[cfg(feature = "openapi-spec")]
+        {
+            let app = app_factory(String::new());
+            let spec: openapi::v3_0::Spec = app.openapi_spec();
+            serde_json::to_string_pretty(&spec)?
+        }
+        #[cfg(not(feature = "openapi-spec"))]
+        {
+            "no open API spec defined".to_string()
+        }
+    };
+
+    HttpServer::new(move || app_factory(openapi_spec.clone()))
+        .bind("127.0.0.1:8080")?
+        .run()
 }

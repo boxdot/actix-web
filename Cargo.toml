@@ -66,6 +66,9 @@ ssl = ["openssl", "actix-server/ssl", "awc/ssl"]
 # rustls
 rust-tls = ["rustls", "actix-server/rust-tls"]
 
+# openapi spec
+openapi-spec = ["openapi", "openapi-schema"]
+
 [dependencies]
 actix-codec = "0.1.2"
 actix-service = "0.4.0"
@@ -98,6 +101,10 @@ url = { version="1.7", features=["query_encoding"] }
 # ssl support
 openssl = { version="0.10", optional = true }
 rustls = { version = "0.15", optional = true }
+
+# experimental dependency for generating openapi schema from app definition
+openapi = { git = "https://github.com/boxdot/openapi", rev = "e42474a", optional = true }
+openapi-schema = { git = "https://github.com/boxdot/openapi-schema", rev = "fdfd56a4", optional = true }
 
 [dev-dependencies]
 actix-http = { version = "0.2.0", features=["ssl", "brotli", "flate2-zlib"] }

@@ -427,6 +427,13 @@ where
     }
 }
 
+#[cfg(feature = "openapi-spec")]
+impl App<AppEntry, Body> {
+    pub fn openapi_spec(&self) -> openapi::v3_0::Spec {
+        Default::default()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use actix_service::Service;
