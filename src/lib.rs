@@ -90,6 +90,7 @@ pub mod guard;
 mod handler;
 mod info;
 pub mod middleware;
+mod openapi;
 mod request;
 mod resource;
 mod responder;
@@ -135,6 +136,7 @@ pub mod dev {
 
     pub use crate::config::{AppConfig, AppService};
     pub use crate::info::ConnectionInfo;
+    pub use crate::openapi::GenerateOpenapi;
     pub use crate::rmap::ResourceMap;
     pub use crate::service::{
         HttpServiceFactory, ServiceRequest, ServiceResponse, WebService,

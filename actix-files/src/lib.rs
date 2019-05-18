@@ -9,6 +9,7 @@ use std::{cmp, io};
 
 use actix_service::boxed::{self, BoxedNewService, BoxedService};
 use actix_service::{IntoNewService, NewService, Service};
+use actix_web::dev::GenerateOpenapi;
 use actix_web::dev::{
     AppService, HttpServiceFactory, Payload, ResourceDef, ServiceRequest,
     ServiceResponse,
@@ -16,6 +17,7 @@ use actix_web::dev::{
 use actix_web::error::{BlockingError, Error, ErrorInternalServerError};
 use actix_web::http::header::DispositionType;
 use actix_web::{web, FromRequest, HttpRequest, HttpResponse, Responder};
+
 use bytes::Bytes;
 use futures::future::{ok, Either, FutureResult};
 use futures::{Async, Future, Poll, Stream};
@@ -360,6 +362,12 @@ impl HttpServiceFactory for Files {
             ResourceDef::prefix(&self.path)
         };
         config.register_service(rdef, None, self, None)
+    }
+}
+
+impl GenerateOpenapi for Files {
+    fn generate_openapi(&self, _spec: &mut openapi::v3_0::Spec) {
+        // TODO
     }
 }
 

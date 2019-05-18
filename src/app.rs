@@ -428,37 +428,18 @@ where
 }
 
 impl App<AppEntry, Body> {
-    pub fn openapi_spec<S>(mut self, title: S, version: S) -> openapi::v3_0::Spec
-    where
-        S: Into<String>,
-    {
-        use crate::config::AppService;
-        use actix_http::Response;
-        use actix_service::service_fn;
-
+    pub fn openapi_spec(
+        mut self,
+        title: impl Into<String>,
+        version: impl Into<String>,
+    ) -> openapi::v3_0::Spec {
         let mut spec = openapi::v3_0::Spec::default();
         spec.openapi = "3.0.1".to_string();
         spec.info.title = title.into();
         spec.info.version = version.into();
 
-        let app_config = AppConfig::new(self.config);
-        let data = Rc::new(self.data);
-
         for service in &mut self.services {
-            let default = self.default.clone().unwrap_or_else(|| {
-                Rc::new(boxed::new_service(service_fn(|req: ServiceRequest| {
-                    Ok(req.into_response(Response::NotFound().finish()))
-                })))
-            });
-
-            let mut config = AppService::new(app_config.clone(), default, data.clone());
-            service.register(&mut config);
-
-            let (_config, services) = config.into_services();
-            for (resource_def, _, _, _) in &services {
-                let pattern = resource_def.pattern();
-                spec.paths.insert(pattern.to_string(), Default::default());
-            }
+            service.generate_openapi(&mut spec);
         }
 
         spec

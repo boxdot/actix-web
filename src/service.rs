@@ -17,18 +17,19 @@ use crate::data::Data;
 use crate::dev::insert_slash;
 use crate::guard::Guard;
 use crate::info::ConnectionInfo;
+use crate::openapi::GenerateOpenapi;
 use crate::request::HttpRequest;
 
-pub trait HttpServiceFactory {
+pub trait HttpServiceFactory: GenerateOpenapi {
     fn register(self, config: &mut AppService);
 }
 
-pub(crate) trait ServiceFactory {
+pub(crate) trait ServiceFactory: GenerateOpenapi {
     fn register(&mut self, config: &mut AppService);
 }
 
 pub(crate) struct ServiceFactoryWrapper<T> {
-    factory: Option<T>,
+    pub(crate) factory: Option<T>,
 }
 
 impl<T> ServiceFactoryWrapper<T> {
@@ -464,7 +465,7 @@ impl WebService {
     }
 }
 
-struct WebServiceImpl<T> {
+pub(crate) struct WebServiceImpl<T> {
     srv: T,
     rdef: String,
     name: Option<String>,
