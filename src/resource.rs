@@ -381,6 +381,39 @@ where
     }
 }
 
+mod openapi {
+    use super::Resource;
+    use crate::http::Method;
+    use crate::openapi::GenerateOpenapi;
+    use openapi::v3_0::Spec;
+
+    impl<T> GenerateOpenapi for Resource<T> {
+        fn generate_openapi(&self, spec: &mut Spec) {
+            for route in &self.routes {
+                if let Some((method, op)) = route.generate_operation(spec) {
+                    let path_item = spec
+                        .paths
+                        .entry(self.rdef.clone())
+                        .or_insert_with(Default::default);
+
+                    let path_item_op = match method {
+                        Method::GET => &mut path_item.get,
+                        Method::PUT => &mut path_item.put,
+                        Method::POST => &mut path_item.post,
+                        Method::DELETE => &mut path_item.delete,
+                        Method::OPTIONS => &mut path_item.options,
+                        Method::HEAD => &mut path_item.head,
+                        Method::PATCH => &mut path_item.patch,
+                        Method::TRACE => &mut path_item.trace,
+                        _ => continue, // FIXME: warning?
+                    };
+                    path_item_op.replace(op); // FIXME: warning on overwrite?
+                }
+            }
+        }
+    }
+}
+
 impl<T> HttpServiceFactory for Resource<T>
 where
     T: NewService<

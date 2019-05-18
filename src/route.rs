@@ -78,6 +78,50 @@ impl NewService for Route {
     }
 }
 
+mod openapi {
+    use super::Route;
+    use crate::http::Method;
+    use crate::openapi::GenerateOpenapi;
+    use actix_http::RequestHead;
+    use openapi::v3_0::{Operation, Spec};
+
+    impl GenerateOpenapi for Route {
+        fn generate_operation(&self, _spec: &mut Spec) -> Option<(Method, Operation)> {
+            let method = self.deduce_method()?;
+            Some((method, Operation::default())) // TODO: implement
+        }
+    }
+
+    impl Route {
+        fn deduce_method(&self) -> Option<Method> {
+            const METHODS: [Method; 8] = [
+                Method::GET,
+                Method::PUT,
+                Method::POST,
+                Method::DELETE,
+                Method::OPTIONS,
+                Method::HEAD,
+                Method::PATCH,
+                Method::TRACE,
+            ];
+
+            let check = |method: &Method| {
+                let mut head = RequestHead::default();
+                head.method = method.clone();
+
+                for f in self.guards.iter() {
+                    if !f.check(&head) {
+                        return false;
+                    }
+                }
+                true
+            };
+
+            METHODS.iter().cloned().find(check)
+        }
+    }
+}
+
 type RouteFuture =
     Box<Future<Item = BoxedRouteService<ServiceRequest, ServiceResponse>, Error = ()>>;
 

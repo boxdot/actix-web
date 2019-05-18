@@ -1,11 +1,20 @@
-use openapi::v3_0::Spec;
+use openapi::v3_0::{ObjectOrReference, Operation, PathItem, Spec};
 
-use crate::resource::Resource;
+use crate::http::Method;
 use crate::scope::Scope;
 use crate::service::{ServiceFactoryWrapper, WebServiceImpl};
 
 pub trait GenerateOpenapi {
-    fn generate_openapi(&self, spec: &mut Spec);
+    fn generate_openapi(&self, _spec: &mut Spec) {}
+    fn generate_path_item(
+        &self,
+        _spec: &mut Spec,
+    ) -> Option<ObjectOrReference<PathItem>> {
+        None
+    }
+    fn generate_operation(&self, _spec: &mut Spec) -> Option<(Method, Operation)> {
+        None
+    }
 }
 
 impl<T> GenerateOpenapi for ServiceFactoryWrapper<T>
@@ -19,20 +28,6 @@ where
     }
 }
 
-impl<T> GenerateOpenapi for Resource<T> {
-    fn generate_openapi(&self, _spec: &mut Spec) {
-        // TODO
-    }
-}
+impl<T> GenerateOpenapi for Scope<T> {}
 
-impl<T> GenerateOpenapi for Scope<T> {
-    fn generate_openapi(&self, _spec: &mut Spec) {
-        // TODO
-    }
-}
-
-impl<T> GenerateOpenapi for WebServiceImpl<T> {
-    fn generate_openapi(&self, _spec: &mut Spec) {
-        // TODO
-    }
-}
+impl<T> GenerateOpenapi for WebServiceImpl<T> {}

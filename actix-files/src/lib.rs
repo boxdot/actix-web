@@ -365,11 +365,7 @@ impl HttpServiceFactory for Files {
     }
 }
 
-impl GenerateOpenapi for Files {
-    fn generate_openapi(&self, _spec: &mut openapi::v3_0::Spec) {
-        // TODO
-    }
-}
+impl GenerateOpenapi for Files {}
 
 impl NewService for Files {
     type Config = ();

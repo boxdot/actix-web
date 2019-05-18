@@ -69,7 +69,9 @@ impl actix_web::dev::HttpServiceFactory for {name} {{
 
         actix_web::dev::HttpServiceFactory::register(resource, config)
     }}
-}}",
+}}
+
+impl actix_web::dev::GenerateOpenapi for {name} {{}}",
             name = self.name,
             ast = quote!(#ast),
             path = self.path,
