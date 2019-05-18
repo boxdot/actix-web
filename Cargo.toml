@@ -100,8 +100,8 @@ openssl = { version="0.10", optional = true }
 rustls = { version = "0.15", optional = true }
 
 # experimental dependency for generating openapi schema from app definition
-openapi = { git = "https://github.com/boxdot/openapi", rev = "e42474a" }
-openapi-schema = { git = "https://github.com/boxdot/openapi-schema", rev = "fdfd56a4" }
+openapi = { git = "https://github.com/softprops/openapi", rev = "c4f4706" }
+openapi-schema = { git = "https://github.com/boxdot/openapi-schema", rev = "cce6573" }
 
 [dev-dependencies]
 actix-http = { version = "0.2.0", features=["ssl", "brotli", "flate2-zlib"] }
