@@ -427,7 +427,6 @@ where
     }
 }
 
-#[cfg(feature = "openapi-spec")]
 impl App<AppEntry, Body> {
     pub fn openapi_spec<S>(mut self, title: S, version: S) -> openapi::v3_0::Spec
     where

@@ -315,17 +315,10 @@ fn main() -> std::io::Result<()> {
     };
 
     let openapi_spec = {
-        #[cfg(feature = "openapi-spec")]
-        {
-            let app = app_factory(String::new());
-            let spec: openapi::v3_0::Spec =
-                app.openapi_spec("Extended Petstore API v1", "1.0.0");
-            serde_json::to_string_pretty(&spec)?
-        }
-        #[cfg(not(feature = "openapi-spec"))]
-        {
-            "no open API spec defined".to_string()
-        }
+        let app = app_factory(String::new());
+        let spec: openapi::v3_0::Spec =
+            app.openapi_spec("Extended Petstore API v1", "1.0.0");
+        serde_json::to_string_pretty(&spec)?
     };
 
     HttpServer::new(move || app_factory(openapi_spec.clone()))
