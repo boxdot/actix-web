@@ -79,6 +79,7 @@
 //!   `gzip`, `deflate` compression.
 //!
 #![allow(clippy::type_complexity, clippy::new_without_default)]
+#![feature(specialization)]
 
 mod app;
 mod app_service;
